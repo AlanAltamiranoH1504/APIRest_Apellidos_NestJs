@@ -1,5 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateProductDto } from './create-product.dto';
 import {
   IsBoolean,
   IsInt,
@@ -10,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {
+export class UpdateProductDto {
   @IsNotEmpty({ message: 'El nombre del producto es obligatorio' })
   @IsString({ message: 'El nombre del producto debe ser una cadena de texto' })
   name_product: string;
@@ -37,4 +35,9 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   @IsNotEmpty({ message: 'El status del producto es obligatorio' })
   @IsBoolean({ message: 'El status del producto debe ser true o false' })
   status: boolean;
+
+  @IsNotEmpty({ message: 'La categoria es obligatoria' })
+  @IsInt({ message: 'La categoria no es valida' })
+  @IsPositive({ message: 'La categoria no es valida' })
+  category: number;
 }

@@ -30,4 +30,9 @@ export class CreateProductDto {
   @IsInt({ message: 'El invetario inicial debe ser un numero entero' })
   @IsPositive({ message: 'El inventario inicial debe ser mayor a 0' })
   quantity: number;
+
+  @IsNotEmpty({ message: 'La categoria es obligatoria' })
+  @IsInt({ message: 'El id de la categoria debe ser un numero entero' })
+  @IsPositive({ message: 'El id de la categoria no es valido' })
+  category: number;
 }

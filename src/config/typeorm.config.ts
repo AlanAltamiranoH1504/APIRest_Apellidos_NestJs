@@ -13,4 +13,5 @@ export const type_orm_config = (
   database: config_service.get('DATABASE_NAME'),
   logging: true,
   entities: [Category, Product],
+  migrations: ['src/migration/*.ts'],
 });

@@ -24,7 +24,14 @@ export class ProductService {
         HttpStatus.CONFLICT,
       );
     }
-    await this.productRepository.save(createProductDto);
+    const product_to_save = this.productRepository.create({
+      name_product: createProductDto.name_product,
+      description_product: createProductDto.description_product,
+      quantity: createProductDto.quantity,
+      price: createProductDto.price,
+      category: { id: Number(createProductDto.category) },
+    });
+    await this.productRepository.save(product_to_save);
     return {
       status: true,
       message: 'Producto agregado correctamente',
@@ -36,6 +43,7 @@ export class ProductService {
       where: {
         status: true,
       },
+      relations: ['category'],
     });
     if (products.length === 0) {
       throw new HttpException(
@@ -56,6 +64,7 @@ export class ProductService {
         id_product: id,
         status: true,
       },
+      relations: ['category'],
     });
     if (!product_to_show) {
       throw new HttpException(
@@ -73,7 +82,6 @@ export class ProductService {
     const product_to_update = await this.productRepository.findOne({
       where: {
         id_product: id,
-        status: true,
       },
     });
     if (!product_to_update) {
@@ -82,14 +90,21 @@ export class ProductService {
         HttpStatus.NOT_FOUND,
       );
     }
-    product_to_update.name_product = updateProductDto.name_product;
-    product_to_update.description_product = updateProductDto.description_product
-      ? updateProductDto.description_product
-      : '';
-    product_to_update.price = updateProductDto.price;
-    product_to_update.quantity = updateProductDto.quantity;
-    product_to_update.status = updateProductDto.status;
+
+    const name_product_in_use = await this.productRepository.findOne({
+      where: {
+        name_product: updateProductDto.name_product,
+      },
+    });
+    if (name_product_in_use && name_product_in_use.id_product !== id) {
+      throw new HttpException(
+        'El nombre del producto ya se encuentra en uso',
+        HttpStatus.CONFLICT,
+      );
+    }
+    Object.assign(product_to_update, updateProductDto);
     await this.productRepository.save(product_to_update);
+
     return {
       status: true,
       message: 'Producto actualizado correctamente',

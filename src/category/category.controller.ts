@@ -10,6 +10,7 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { IdValidationPipe } from '../common/pipes/id-validation/id-validation.pipe';
 
 @Controller('category')
 export class CategoryController {
@@ -20,26 +21,26 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto);
   }
 
-  @Get()
+  @Get('/find_all')
   findAll() {
     return this.categoryService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('/find_category/:id')
+  findOne(@Param('id', IdValidationPipe) id: string) {
     return this.categoryService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('/update_category/:id')
   update(
-    @Param('id') id: string,
+    @Param('id', IdValidationPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete('/delete_category/:id')
+  remove(@Param('id', IdValidationPipe) id: string) {
     return this.categoryService.remove(+id);
   }
 }

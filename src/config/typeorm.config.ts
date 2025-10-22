@@ -2,6 +2,7 @@ import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Category } from '../category/entities/category.entity';
 import { Product } from '../product/entities/product.entity';
+import { Customer } from '../customer/entities/customer.entity';
 export const type_orm_config = (
   config_service: ConfigService,
 ): TypeOrmModuleOptions => ({
@@ -12,6 +13,5 @@ export const type_orm_config = (
   password: config_service.get('DATABASE_PASSWORD'),
   database: config_service.get('DATABASE_NAME'),
   logging: true,
-  entities: [Category, Product],
-  migrations: ['src/migration/*.ts'],
+  entities: [Category, Product, Customer],
 });

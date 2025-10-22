@@ -1,5 +1,7 @@
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { Category } from '../category/entities/category.entity';
+import { Product } from '../product/entities/product.entity';
 export const type_orm_config = (
   config_service: ConfigService,
 ): TypeOrmModuleOptions => ({
@@ -9,6 +11,6 @@ export const type_orm_config = (
   username: config_service.get('DATABASE_USER'),
   password: config_service.get('DATABASE_PASSWORD'),
   database: config_service.get('DATABASE_NAME'),
-  autoLoadEntities: true,
-  synchronize: true,
+  logging: true,
+  entities: [Category, Product],
 });

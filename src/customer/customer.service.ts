@@ -6,10 +6,13 @@ import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
 import { PasswordService } from '../auth/password/password.service';
 import { Request } from 'express';
+import { Adress } from '../adress/entities/adress.entity';
 
 @Injectable()
 export class CustomerService {
   constructor(
+    @InjectRepository(Adress)
+    private readonly addresRepository: Repository<Adress>,
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
     private readonly passwordService: PasswordService,
@@ -27,6 +30,12 @@ export class CustomerService {
         HttpStatus.CONFLICT,
       );
     }
+
+    // * Creacion de address
+    const address_to_save = await this.addresRepository.save(
+      createCustomerDto.address,
+    );
+
     const password_hash = await this.passwordService.hashPassword(
       createCustomerDto.password_customer,
     );
@@ -37,6 +46,7 @@ export class CustomerService {
         : '',
       email_customer: createCustomerDto.email_customer,
       password_customer: password_hash,
+      address: address_to_save,
     });
     await this.customerRepository.save(customer_to_save);
     return {

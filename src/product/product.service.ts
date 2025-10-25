@@ -38,10 +38,10 @@ export class ProductService {
     };
   }
 
-  async findAll() {
+  async findAll(status: boolean) {
     const products = await this.productRepository.find({
       where: {
-        status: true,
+        status: status,
       },
       relations: ['category'],
     });

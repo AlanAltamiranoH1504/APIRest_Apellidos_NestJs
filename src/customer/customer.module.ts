@@ -5,10 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { PasswordService } from '../auth/password/password.service';
 import { Exists_Customer_Middleware } from '../middlewares/exists_customer.middleware';
-import { Email_In_Use_Middleware } from '../middlewares/use_email_customer.middleware';
+import { Adress } from '../adress/entities/adress.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer])],
+  imports: [TypeOrmModule.forFeature([Customer, Adress])],
   controllers: [CustomerController],
   providers: [CustomerService, PasswordService],
 })

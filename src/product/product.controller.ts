@@ -11,6 +11,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IdValidationPipe } from '../common/pipes/id-validation/id-validation.pipe';
+import { StatusValidationPipe } from '../common/pipes/status-validation/status-validation.pipe';
 
 @Controller('product')
 export class ProductController {
@@ -21,9 +22,9 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
-  @Get('/find_all')
-  findAll() {
-    return this.productService.findAll();
+  @Get('/find_all/:status')
+  findAll(@Param('status', StatusValidationPipe) status: boolean) {
+    return this.productService.findAll(status);
   }
 
   @Get('/find_product/:id')

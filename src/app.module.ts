@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { CustomerModule } from './customer/customer.module';
 import { PasswordService } from './auth/password/password.service';
+import { AdressModule } from './adress/adress.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PasswordService } from './auth/password/password.service';
     CategoryModule,
     ProductModule,
     CustomerModule,
+    AdressModule,
   ],
   controllers: [AppController],
   providers: [AppService, PasswordService],

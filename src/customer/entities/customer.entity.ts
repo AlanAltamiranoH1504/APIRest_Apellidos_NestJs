@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Adress } from '../../adress/entities/adress.entity';
 
 @Entity('tbl_customers')
 export class Customer {
@@ -19,4 +26,8 @@ export class Customer {
 
   @Column({ type: 'boolean', default: true })
   status: boolean;
+
+  @OneToOne(() => Adress, (adress) => adress.customer, { cascade: true })
+  @JoinColumn({ name: 'address_id' })
+  address: Adress;
 }

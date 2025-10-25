@@ -1,10 +1,14 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsOptional,
   IsString,
   Length,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateAdressDto } from '../../adress/dto/create-adress.dto';
 
 export class CreateCustomerDto {
   @IsNotEmpty({ message: 'El nombre del cliente es obligatorio' })
@@ -27,4 +31,13 @@ export class CreateCustomerDto {
     message: 'El password debe tener una longitud minima de 6 caracteres',
   })
   password_customer: string;
+
+  // * Importacion de DTO de Adress dentro de Dto de Customer
+  @IsNotEmptyObject(
+    { nullable: false },
+    { message: 'La direccion es obligatoria' },
+  )
+  @ValidateNested()
+  @Type(() => CreateAdressDto)
+  address: CreateAdressDto;
 }

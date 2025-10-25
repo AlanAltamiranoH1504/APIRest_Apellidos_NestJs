@@ -10,6 +10,8 @@ import {
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { StatusValidationPipe } from '../common/pipes/status-validation/status-validation.pipe';
+import { IdValidationPipe } from '../common/pipes/id-validation/id-validation.pipe';
 
 @Controller('customer')
 export class CustomerController {
@@ -20,26 +22,26 @@ export class CustomerController {
     return this.customerService.create(createCustomerDto);
   }
 
-  @Get()
-  findAll() {
-    return this.customerService.findAll();
+  @Get('/find_all/:status')
+  findAll(@Param('status', StatusValidationPipe) status: boolean) {
+    return this.customerService.findAll(status);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('/find_customer/:id')
+  findOne(@Param('id', IdValidationPipe) id: string) {
     return this.customerService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('/update_customer/:id')
   update(
-    @Param('id') id: string,
+    @Param('id', IdValidationPipe) id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
     return this.customerService.update(+id, updateCustomerDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete('/delete_customer/:id')
+  remove(@Param('id', IdValidationPipe) id: string) {
     return this.customerService.remove(+id);
   }
 }

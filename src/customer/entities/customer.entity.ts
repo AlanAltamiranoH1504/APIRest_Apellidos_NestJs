@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('tbl_customers')
 export class Customer {
   @PrimaryGeneratedColumn()
-  id_customer: string;
+  id_customer: number;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
   name_customer: string;

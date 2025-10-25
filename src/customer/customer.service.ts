@@ -4,13 +4,15 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { PasswordService } from '../auth/password/password.service';
+import { Request } from 'express';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
@@ -21,13 +23,12 @@ export class CustomerService {
     });
     if (email_in_use) {
       throw new HttpException(
-        'El emaail ya se encuentra registrado en la base de datos',
+        'El email ya se encuentra registrado en la base de datos',
         HttpStatus.CONFLICT,
       );
     }
-    const password_hash = await bcrypt.hash(
+    const password_hash = await this.passwordService.hashPassword(
       createCustomerDto.password_customer,
-      10,
     );
     const customer_to_save = this.customerRepository.create({
       name_customer: createCustomerDto.name_customer,
@@ -44,19 +45,89 @@ export class CustomerService {
     };
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async findAll(status: boolean) {
+    const customers = await this.customerRepository.find({
+      where: {
+        status: status,
+      },
+      select: [
+        'id_customer',
+        'name_customer',
+        'lastname_customer',
+        'email_customer',
+        'status',
+      ],
+    });
+
+    if (customers.length === 0) {
+      return {
+        status: false,
+        message: 'No se encuentra usuarios disponibles',
+      };
+    }
+    return {
+      status: true,
+      customers: customers,
+      total: customers.length,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: number) {
+    const customer_to_show = await this.customerRepository.findOne({
+      where: {
+        id_customer: id,
+      },
+      select: [
+        'name_customer',
+        'lastname_customer',
+        'email_customer',
+        'status',
+      ],
+    });
+    return {
+      status: true,
+      customer: customer_to_show,
+    };
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
+    const email_in_use = await this.customerRepository.findOne({
+      where: {
+        email_customer: updateCustomerDto.email_customer,
+        status: true,
+      },
+    });
+    if (email_in_use && email_in_use.id_customer !== +id) {
+      throw new HttpException(
+        'El email esta siendo utilizado por alguno otro usuario',
+        HttpStatus.CONFLICT,
+      );
+    }
+    const customer_to_update = await this.customerRepository.findOne({
+      where: {
+        id_customer: id,
+      },
+    });
+    Object.assign(customer_to_update!, updateCustomerDto);
+    await this.customerRepository.save(customer_to_update!);
+    return {
+      status: true,
+      message: 'Usuario actualizado correctamente',
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: number) {
+    await this.customerRepository.update(
+      {
+        id_customer: id,
+      },
+      {
+        status: false,
+      },
+    );
+    return {
+      status: true,
+      message: 'Customer eliminado correctamente',
+    };
   }
 }

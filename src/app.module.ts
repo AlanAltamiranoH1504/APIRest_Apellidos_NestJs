@@ -9,6 +9,7 @@ import { type_orm_config } from './config/typeorm.config';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { CustomerModule } from './customer/customer.module';
+import { PasswordService } from './auth/password/password.service';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { CustomerModule } from './customer/customer.module';
     CustomerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PasswordService],
 })
 export class AppModule {}

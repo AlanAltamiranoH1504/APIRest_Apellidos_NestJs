@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AdressService } from './adress.service';
 import { CreateAdressDto } from './dto/create-adress.dto';
 import { UpdateAdressDto } from './dto/update-adress.dto';
+import { IdValidationPipe } from '../common/pipes/id-validation/id-validation.pipe';
 
-@Controller('adress')
+@Controller('address')
 export class AdressController {
   constructor(private readonly adressService: AdressService) {}
 
@@ -12,18 +21,21 @@ export class AdressController {
     return this.adressService.create(createAdressDto);
   }
 
-  @Get()
+  @Get('/find_all')
   findAll() {
     return this.adressService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('/find_by_id/:id')
+  findOne(@Param('id', IdValidationPipe) id: string) {
     return this.adressService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdressDto: UpdateAdressDto) {
+  @Patch('/update_address/:id')
+  update(
+    @Param('id', IdValidationPipe) id: string,
+    @Body() updateAdressDto: UpdateAdressDto,
+  ) {
     return this.adressService.update(+id, updateAdressDto);
   }
 

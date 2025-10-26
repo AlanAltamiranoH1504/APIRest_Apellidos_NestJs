@@ -67,6 +67,7 @@ export class CustomerService {
         'email_customer',
         'status',
       ],
+      relations: ['address'],
     });
 
     if (customers.length === 0) {
@@ -88,11 +89,13 @@ export class CustomerService {
         id_customer: id,
       },
       select: [
+        'id_customer',
         'name_customer',
         'lastname_customer',
         'email_customer',
         'status',
       ],
+      relations: ['address'],
     });
     return {
       status: true,
